@@ -3,6 +3,9 @@ package com.example.semana2;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -14,9 +17,12 @@ public class MainActivity extends AppCompatActivity {
     private TextView puntajeTxt;
     private TextView tiempoTxt;
     private Button responder;
+    private Button reiniciar;
     Pregunta preguntaClass;
     private int tiempoRestante;
     private int puntaje;
+    private int tiempoPul;
+    private boolean isPressed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,21 +32,110 @@ public class MainActivity extends AppCompatActivity {
         respuestaUser = findViewById(R.id.respuestaUsuario);
         puntajeTxt = findViewById(R.id.puntaje);
         tiempoTxt = findViewById(R.id.tiempo);
+        responder = findViewById(R.id.responder);
+        reiniciar = findViewById(R.id.reset);
         puntaje = 0;
         tiempoRestante = 30;
-        generarNuevaPregunta();
+
         pregunta.setText(preguntaClass.getPregunta());
         tiempoTxt.setText("" + tiempoRestante);
         puntajeTxt.setText("Puntaje:" + "  " + puntaje);
+
+        responder.setEnabled(true);
+        reiniciar.setVisibility(View.GONE);
+        reiniciar.setVisibility(View.GONE);
+
+
+        new Thread(() -> {
+            while(tiempoRestante>0) {
+                try {
+                    tiempoRestante--;
+
+                    runOnUiThread(
+                            () -> {
+                                tiempoTxt.setText("" + tiempoRestante);
+                            }
+                    );
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Log.e("ERROR", e.toString());
+                }
+
+            }
+        if(tiempoRestante==0){
+            runOnUiThread(
+                    () -> {
+                      responder.setEnabled(false);
+                      reiniciar.setVisibility(View.VISIBLE);
+                    });
+        }
+
+        }).start();
+
+
+        generarNuevaPregunta();
 
         responder.setOnClickListener(
                 (view) -> {
                     verificarRespuesta();
                 }
         );
+
+        reiniciar.setOnClickListener(
+                (view) -> {
+                    reiniciarTodo();
+                }
+        );
+
+
+        isPressed = false;
+        pregunta.setOnTouchListener(
+                (view, event) ->{
+                    if (event.getAction()== MotionEvent.ACTION_DOWN){
+                        isPressed = true;
+
+                        new Thread(()->{
+                            tiempoPul = 0;
+                            while(tiempoPul<1500){
+                                try {
+
+                                    Thread.sleep(1);
+                                    tiempoPul++;
+                                    if(isPressed==false){
+                                        return;
+                                    }
+                                } catch (InterruptedException e) {
+
+                                }
+
+                            }
+
+                            runOnUiThread(
+                                    () -> {
+                            generarNuevaPregunta();});
+
+
+                        }).start();
+                    }
+                    if (event.getAction()== MotionEvent.ACTION_UP){
+                        isPressed = false;
+                    }
+                    return true;
+
+        });
     }
 
-        public void verificarRespuesta(){
+    private void reiniciarTodo() {
+        generarNuevaPregunta();
+        puntaje = 0;
+        puntajeTxt.setText("Puntaje:" + "  " + puntaje);
+        tiempoRestante = 30;
+        reiniciar.setVisibility(View.GONE);
+        responder.setEnabled(true);
+
+    }
+
+    public void verificarRespuesta(){
             String resTxt = respuestaUser.getText().toString();
             int resUser = (int) Integer.parseInt(resTxt);
         if(resUser == preguntaClass.getRespuesta()){
