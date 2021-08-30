@@ -4,26 +4,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/pregunta"
-        android:layout_width="43dp"
-        android:layout_height="6dp"
-        android:layout_marginTop="226dp"
+        android:layout_width="238dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="108dp"
         android:text="TextView"
+        android:textAlignment="center"
+        android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/respuestaUsuario"
-        android:layout_width="210dp"
-        android:layout_height="64dp"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="60dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/campostexto"
         android:ems="10"
         android:hint="Escribe tu respuesta"
         android:inputType="textPersonName"
+        android:textAlignment="viewStart"
+        android:textColor="#D1D0D0"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pregunta" />
@@ -50,21 +60,34 @@
 
     <Button
         android:id="@+id/responder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="44dp"
+        android:layout_marginEnd="16dp"
+        android:background="#3F74B5"
         android:text="Responder"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/respuestaUsuario" />
 
     <Button
         android:id="@+id/reset"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginEnd="16dp"
+        android:background="#3F74B5"
         android:text="Intentar de nuevo"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/responder" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -37,7 +37,8 @@ public class MainActivity extends AppCompatActivity {
         puntaje = 0;
         tiempoRestante = 30;
 
-        pregunta.setText(preguntaClass.getPregunta());
+        generarNuevaPregunta();
+
         tiempoTxt.setText("" + tiempoRestante);
         puntajeTxt.setText("Puntaje:" + "  " + puntaje);
 
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         }).start();
 
 
-        generarNuevaPregunta();
+
 
         responder.setOnClickListener(
                 (view) -> {
@@ -91,36 +92,39 @@ public class MainActivity extends AppCompatActivity {
         isPressed = false;
         pregunta.setOnTouchListener(
                 (view, event) ->{
-                    if (event.getAction()== MotionEvent.ACTION_DOWN){
-                        isPressed = true;
+                    switch(event.getAction()) {
+                        case (MotionEvent.ACTION_DOWN):
+                            isPressed = true;
 
-                        new Thread(()->{
-                            tiempoPul = 0;
-                            while(tiempoPul<1500){
-                                try {
+                            new Thread(() -> {
+                                tiempoPul = 0;
+                                while (tiempoPul < 1500) {
+                                    try {
 
-                                    Thread.sleep(1);
-                                    tiempoPul++;
-                                    if(isPressed==false){
-                                        return;
+                                        Thread.sleep(1);
+                                        tiempoPul++;
+                                        if (isPressed == false) {
+                                            return;
+                                        }
+                                    } catch (InterruptedException e) {
+
                                     }
-                                } catch (InterruptedException e) {
 
                                 }
 
-                            }
+                                runOnUiThread(
+                                        () -> {
+                                            generarNuevaPregunta();
+                                        });
 
-                            runOnUiThread(
-                                    () -> {
-                            generarNuevaPregunta();});
 
+                            }).start();
 
-                        }).start();
+                            break;
+                        case (MotionEvent.ACTION_UP):
+                            isPressed = false;
                     }
-                    if (event.getAction()== MotionEvent.ACTION_UP){
-                        isPressed = false;
-                    }
-                    return true;
+                        return true;
 
         });
     }
@@ -132,7 +136,31 @@ public class MainActivity extends AppCompatActivity {
         tiempoRestante = 30;
         reiniciar.setVisibility(View.GONE);
         responder.setEnabled(true);
+        new Thread(() -> {
+            while(tiempoRestante>0) {
+                try {
+                    tiempoRestante--;
 
+                    runOnUiThread(
+                            () -> {
+                                tiempoTxt.setText("" + tiempoRestante);
+                            }
+                    );
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Log.e("ERROR", e.toString());
+                }
+
+            }
+            if(tiempoRestante==0){
+                runOnUiThread(
+                        () -> {
+                            responder.setEnabled(false);
+                            reiniciar.setVisibility(View.VISIBLE);
+                        });
+            }
+
+        }).start();
     }
 
     public void verificarRespuesta(){
